@@ -1,0 +1,496 @@
+<!--
+<svg aria-hidden="true" class="slds-icon">
+    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#account')}"></use>
+</svg>
+-->
+<apex:page applyBodyTag="false" showHeader="false" sidebar="false" controller="Kimble_WorkItemsAndTaskController" docType="html-5.0">
+
+    <head>
+        <apex:slds />
+        <apex:stylesheet value="{!URLFOR($Resource.Kimble_EnhancedWorkItemsAndTask, '/Kimble_EnhancedWorkItemsAndTask/Kimble_EnhancedWorkItemsAndTask.css')}"
+        />
+    </head>
+
+    <body class="slds-scope">
+        <apex:form id="main-form">
+
+            <div class="main-container">
+
+                <!-- <div class="header-container">
+                    <div class="icon-div">
+                        <span class="slds-icon_container slds-icon_container_circle slds-icon-action-description">
+                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#record')}"></use>
+                    </svg>
+                </span>
+                    </div>
+                    <div class="title-div">
+                        <p>{! accountName}</p>
+                        *
+                        <p>{! engagementName}</p>
+                        *
+                        <p>{! pageName}</p>
+                    </div>
+                </div> -->
+                <div class="toolbar-container">
+                    <div class="search-div">
+                        <!-- <button class="slds-button slds-button_neutral" onclick="redirectToHome(event);">Dashboard</button> -->
+                        <p style="display:inline-block;color:transparent;">.</p>
+                        <p id="saveWarning" class="hide" style="color:#da4b56;font-weight: 600;">You have unsaved Changes!</p>
+                    </div>
+                    <div class="actions-div">
+                        <!-- <span class="slds-icon_container slds-icon-utility-refresh">
+                        <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#refresh')}"></use>
+                    </svg>
+                </span> -->
+                        <span style="cursor: pointer;" class="slds-icon_container slds-icon-utility-save"
+                            onclick="saveTaskAndWorkItems()">
+                        <svg id="save-button-svg" class="slds-icon slds-icon-text-default slds-icon_small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#save')}"></use>
+                                
+                    </svg>
+                </span>
+                        
+                    </div>
+                    
+                    <apex:outputText rendered="{!PGroup}" >Informatics</apex:outputText>
+                    <apex:outputText rendered="{!NOT(PGroup)}" >Not Informatics</apex:outputText>
+                    <input id="isinfo1" value="{!PGroup}" style="display:none" />
+                    
+                </div>
+                <!-- <div class="toolbar-container"> -->
+                <div class="details-container">
+                    <div class="task-card">
+                        <div class="task-details" style="border-right-width: 0;">
+                            <div class="ti-actions">
+                            </div>
+                            <div class="ti-basic-details" style="font-weight: bold;">Task Name</div>
+                            <div class="ti-status-details ti-status-details-header">
+                                <div class="ti-start-date ti-start-date-header">Start Date</div>
+                                <div class="ti-end-date ti-end-date-header">End Date</div>
+                                <div class="ti-status ti-status-header">Status</div>
+                            </div>
+                            <div class="ti-metrics">
+                                <!-- <div class="ass-res-name">Resource Utilization</div> -->
+                                <div class="ass-expended" title="Baseline">B</div>
+                                <!--div class="ass-expended" title="Expended">E</div-->
+                                 <div class="ass-expended" title="Expended Minutes">M</div>
+                                <div class="ass-expended" title="Expended Hours">H</div>
+                                <div class="ass-expended" title="Remaining">R</div>
+                                <div class="ass-expended" title="Percent Complete">P</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+                <apex:outputPanel id="main-panel">
+                    <div class="details-container" >
+                        <apex:repeat var="task" value="{!tasksList}" >
+                            <apex:outputPanel rendered="{!If(contains(task.taskName,'Clinical Performance onsite Training')=true,false,true)}">
+                            <div class="task-card" id="{!task.id}">
+                                <div class="task-details {!task.status}">
+                                    <div class="ti-actions">
+                                        <!-- <span style="cursor:pointer;" class="slds-icon_container slds-icon-utility-add" onclick="addWorkItem('{!task.id}');">
+                                    <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#add')}"></use>
+                                </svg>
+                            </span> -->
+                                    </div>
+                                    <div class="ti-basic-details">{!task.taskName}</div>
+                                    <div class="ti-status-details">
+                                        <!-- <div class="ti-start-date"><input class="ti-start-date-val ti-start-date red-highlight" type="text" value="{!task.startDate}" onchange="updateTask({!task.id})"/></div>
+                            <div class="ti-end-date"><input class="ti-end-date-val ti-end-date red-highlight" type="text" value="{!task.endDate}" onchange="updateTask({!task.id})"/></div> -->
+                                        <div class="ti-start-date">
+                                            <apex:input styleClass="ti-start-date-val ti-start-date red-highlight"
+                                                type="date" value="{!task.startDate}"
+                                                onchange="updateTask('{!task.id}', '{!task.taskId}')" />
+                                        </div>
+                                        <div class="ti-end-date">
+                                            <apex:input styleClass="ti-end-date-val ti-end-date red-highlight"
+                                                type="date" value="{!task.endDate}" onchange="updateTask('{!task.id}', '{!task.taskId}')"
+                                            />
+                                        </div>
+                                        <div class="ti-status">
+                                            <select class="ti-status-val status-select list-input {!task.status}" onchange="changeStatusColor(this);updateTask('{!task.id}', '{!task.taskId}');">
+                                    <apex:repeat var="status" value="{!completionStatusValues}">
+                                        <apex:outputPanel rendered="{!(status==task.status)}">
+                                            <option value="{!status}" selected="selected">{!status}</option>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!(status!=task.status)}">
+                                            <option value="{!status}">{!status}</option>
+                                        </apex:outputPanel>
+                                    </apex:repeat>
+                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="ti-metrics">
+                                        <!-- <div class="ass-res-name">Resource Utilization</div> -->
+                                        <div class="ass-baseline" title="Baseline">{!task.baselineEffort}</div>
+                                        <!--div class="ass-expended red-highlight" title="Expended"><input class="ass-expended-val ass-expended red-highlight"
+                                                type="text" value="{!task.expendedEffort}"
+                                                onchange="updateTask({!task.id})" /></div-->
+                                        <div class="ass-expended red-highlight" title="Expended Minutes"><input class="ass-expended-val ass-expended red-highlight"
+                                                type="text" value="{!task.expendedMinutes}" style="{! IF(NOT(PGroup),'','display: none;') }"
+                                                onchange="updateTask('{!task.id}', '{!task.taskId}')" /></div> <!--<apex:inputText styleClass="ass-expended-val ass-expended red-highlight"
+                                                value="{!task.expendedMinutes}" rendered="{!NOT(PGroup)}"
+                                                onchange="updateTask('{!task.id}', '{!task.taskId}')" /></div> 
+                                        div class="ass-pct-estimatedMinutes" title="Expended Minutes"><input class="ass-expended-val1 ass-expended red-highlight"
+                                                type="text" value="{!task.expendedMinutes}"
+                                                onchange="updateTask({!task.id})" /></div-->
+                                        <div class="ass-baseline red-highlight" title="Expended Hours"><apex:inputText value="{!task.expendedHours}" styleClass="ass-expended-val1 ass-expended red-highlight"
+                                                rendered="{!PGroup}" onchange="updateTask('{!task.id}', '{!task.taskId}')" /><apex:outputText rendered="{!NOT(PGroup)}" >{!task.expendedHours}</apex:outputText></div>
+                                        <!-- <div class="ass-remaining red-highlight" title="Remaining"><input class="ass-remaining-val ass-remaining red-highlight" type="text" value="{!task.remainingEffort}" onchange="updateTask({!task.id})"/></div> -->
+                                        <div class="ass-remaining" title="Remaining">{!task.remainingEffort}</div>
+                                        <div class="ass-pct-complete" title="Percent Complete">{!task.percentCompleted}%</div>
+                                        
+
+                                    </div>
+                                </div>
+                                <apex:repeat var="workItem" value="{!task.wiWrapperList}">
+                                    <div class="workitem-card" id="{!workItem.id}">
+                                        <div class="workitem-detail {!workItem.status}">
+                                            <div class="wi-actions">
+                                                <span style="cursor:pointer" class="slds-icon_container slds-icon-utility-edit" onclick="toggleNotes('{!workItem.id}');">
+                                                    <svg class="slds-icon slds-icon-text-default slds-icon_xx-small" aria-hidden="true">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#edit')}"></use>
+                                                    </svg>
+                                                </span>
+                                                <!-- <span style="cursor:pointer" class="slds-icon_container slds-icon-utility-delete">
+                                                        <svg class="slds-icon slds-icon-text-default slds-icon_xx-small" aria-hidden="true">
+                                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}"></use>
+                                                        </svg>
+                                                </span> -->
+                                            </div>
+                                            <div class="wi-add-detail">
+                                                <p>{!workItem.Name}</p>
+                                                <apex:outputPanel rendered="{!ISBLANK(workItem.notes)}">
+                                                    <p class="wi-notes hide {!workItem.id}">
+                                                        <apex:inputTextarea styleClass="wi-notes-val"
+                                                            style="width: 350px;height: 25px;"
+                                                            value="{!workItem.notes}" onchange="updateWorkItem('{!workItem.taskId}', '{!workItem.id}');"
+                                                        />
+                                                    </p>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!NOT(ISBLANK(workItem.notes))}">
+                                                    <p class="wi-notes show {!workItem.id}">
+                                                        <apex:inputTextarea styleClass="wi-notes-val"
+                                                            style="width: 350px;height: 25px;"
+                                                            value="{!workItem.notes}" onchange="updateWorkItem('{!workItem.taskId}', '{!workItem.id}');"
+                                                        />
+                                                    </p>
+                                                </apex:outputPanel>
+                                            </div>
+                                            <div class="wi-status-details">
+                                                <div class="ti-start-date">
+                                                    <apex:input styleClass="ti-start-date-val ti-start-date red-highlight"
+                                                        type="date" value="{!workItem.startDate}"
+                                                        onchange="updateWorkItem('{!workItem.taskId}', '{!workItem.id}');"
+                                                    />
+                                                </div>
+                                                <div class="ti-end-date">
+                                                    <apex:input styleClass="ti-end-date-val ti-end-date red-highlight"
+                                                        type="date" value="{!workItem.endDate}"
+                                                        onchange="updateWorkItem('{!workItem.taskId}', '{!workItem.id}');"
+                                                    />
+                                                </div>
+                                                <div class="wi-status">
+                                                    <select class="wi-status-val status-select list-input {!workItem.status}" onchange="changeStatusColor(this);updateWorkItem('{!workItem.taskId}', '{!workItem.id}');updateTask('{!task.id}', '{!task.taskId}');">
+                                                        <apex:repeat var="status" value="{!completionStatusValues}">
+                                                            <apex:outputPanel rendered="{!(status==workItem.status)}">
+                                                                <option value="{!status}" selected="selected">{!status}</option>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel rendered="{!(status!=workItem.status)}">
+                                                                <option rendered="{!(status!=workItem.status)}" value="{!status}">{!status}</option>
+                                                            </apex:outputPanel>
+                                                        </apex:repeat>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:repeat>
+                            </div>
+                            </apex:outputPanel>
+                        </apex:repeat>
+                    </div>
+                </apex:outputPanel>
+                <!-- <apex:outputPanel id="add-task-popup-panel">
+        <div id="add-task-popup" style="height:640px" class="hide">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="closeAddWIpopup(event);">
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink"  xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add New Work Item</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-form">
+                            <input id="popup-taskid" type="hidden" value="" />
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="popup-taskname">Task Name</label>
+                                <div id="popup-taskname" class="slds-form-element__control">
+                                    task name
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="popup-workitem-name">Work Item Name</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="popup-workitem-name" class="slds-input" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="popup-workitem-notes">Work Item Notes</label>
+                                <div class="slds-form-element__control">
+                                    <textarea type="text" id="popup-workitem-notes" class="slds-textarea" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="popup-workitem-status">Work Item Status</label>
+                                <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" id="popup-workitem-status">
+                                                <apex:repeat var="status" value="{!completionStatusValues}">
+                                                    <option>{!status}</option>
+                                                </apex:repeat>
+                                            </select>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick="saveNewWorkItem(event);return false;">Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        </apex:outputPanel> -->
+                <apex:actionFunction action="{!saveRecords}" name="saveRecordsAF" rerender="main-panel"
+                    oncomplete="deactivateSaveButton()">
+                    <apex:param id="tasksData" name="tasksData" value="" />
+                    <apex:param id="workItemData" name="workItemData" value="" />
+                </apex:actionFunction>
+                <apex:actionFunction action="{!saveNewWI}" name="saveNewWIAF" rerender="main-panel"
+                    oncomplete="deactivateSaveButton();closeAddWIpopup(event);">
+                    <apex:param id="newWorkItem" name="newWorkItem" value="" />
+                </apex:actionFunction>
+                <apex:actionFunction action="{!redirectToEngagementHome}" name="redirectToEngagementHomeAF">
+                </apex:actionFunction>
+            </div>
+        </apex:form>
+    </body>
+   <!-- <apex:includeScript value="{!URLFOR($Resource.Kimble_EnhancedWorkItemsAndTask, '/Kimble_EnhancedWorkItemsAndTask/Kimble_EnhancedWorkItemsAndTask.js')}"
+    />-->
+<script>
+    function changeStatusColor(elem) {
+        console.log('jithin elem----' + elem);
+        console.log('completion status---' + elem.value);
+        elem.classList.remove('NotStarted', 'InProgress', 'Completed', 'OnHold');
+        elem.classList.add(elem.value);
+
+        //set parent border status
+        var parentElem = findAncestor(elem, 'workitem-detail');
+        console.log('parent elem---',parentElem);
+        if(parentElem == 'undefined' || parentElem == null) {
+            parentElem = findAncestor(elem, 'task-details');
+        }
+        parentElem.classList.remove('NotStarted', 'InProgress', 'Completed', 'OnHold');
+        parentElem.classList.add(elem.value);
+    }
+
+function findAncestor(el, cls) {
+    while ((el = el.parentElement) && !el.classList.contains(cls));
+    return el;
+}
+
+function activateSaveButton() {
+    var saveButtonElem = document.getElementById('save-button-svg');
+    saveButtonElem.classList.add('slds-icon-text-warning');
+    var saveWarningElem = document.getElementById('saveWarning');
+    saveWarningElem.classList.remove('hide');
+    saveWarningElem.classList.add('show-inline');
+}
+function deactivateSaveButton() {
+    var saveButtonElem = document.getElementById('save-button-svg');
+    saveButtonElem.classList.remove('slds-icon-text-warning');
+    var saveWarningElem = document.getElementById('saveWarning');
+    saveWarningElem.classList.remove('show-inline');
+    saveWarningElem.classList.add('hide');
+    //clear local data
+    taskMap = new Map();
+    workItemMap = new Map();
+}
+
+var taskMap = new Map();
+function updateTask(taskId, parentTaskId) {
+    activateSaveButton();
+    var task_id = taskId;
+    var getisinfo = document.getElementById('isinfo1');
+    var taskParentElem = document.getElementById(task_id);
+    var startDateElem = taskParentElem.getElementsByClassName('ti-start-date-val')[0];
+    var endDateElem = taskParentElem.getElementsByClassName('ti-end-date-val')[0];
+    var status = taskParentElem.getElementsByClassName('ti-status-val')[0];
+    //var expendedEffortElem = taskParentElem.getElementsByClassName('ass-expended-val')[0];
+    var expendedEffortMin = taskParentElem.getElementsByClassName('ass-expended-val')[0];
+    var expendedEffortHours = taskParentElem.getElementsByClassName('ass-expended-val1')[0];
+    // var remainingEffortElem = taskParentElem.getElementsByClassName('ass-remaining-val')[0];
+    console.log(expendedEffortMin);
+    console.log(getisinfo);
+    var key = task_id;
+    if(getisinfo.value=='true') {
+        var val = {
+            "id": task_id,
+            "taskId": parentTaskId,
+            "startDate": startDateElem.value,
+            "endDate": endDateElem.value,
+            "status": status.value,
+           // "expendedEffort": expendedEffortElem.value,
+            "expendedMinutes": expendedEffortMin.value,
+            "expendedHours": expendedEffortHours.value
+            // ,
+            // "remainingEffort": remainingEffortElem.value
+        }
+
+    }
+    else {
+        var val = {
+            "id": task_id,
+            "taskId": parentTaskId,
+            "startDate": startDateElem.value,
+            "endDate": endDateElem.value,
+            "status": status.value,
+           // "expendedEffort": expendedEffortElem.value,
+            "expendedMinutes": expendedEffortMin.value
+            // ,
+            // "remainingEffort": remainingEffortElem.value
+        }
+
+    }
+    if(val.startDate !== undefined && val.endDate !== undefined) {
+        if(new Date(val.endDate) < new Date(val.startDate)) {
+            alert('End date should be greater or equal to start date');
+            return;
+        }
+    }
+    taskMap.set(key, val);
+}
+
+var workItemMap = new Map();
+function updateWorkItem(taskId, wiId) {
+    activateSaveButton();
+    var taskId = taskId;
+    var workItemId = wiId;
+    var wiParentElem = document.getElementById(workItemId);
+    var wiNotesElem = wiParentElem.getElementsByClassName('wi-notes-val')[0];
+    var wiStatusElem = wiParentElem.getElementsByClassName('wi-status-val')[0];
+    var wiStartDateElem = wiParentElem.getElementsByClassName('ti-start-date-val')[0];
+    var wiEndDateElem = wiParentElem.getElementsByClassName('ti-end-date-val')[0];
+    var key = workItemId;
+    var val = {
+        "id": workItemId,
+        "taskId": taskId,
+        "notes": wiNotesElem.value,
+        "status": wiStatusElem.value,
+        "startDate": wiStartDateElem.value,
+        "endDate": wiEndDateElem.value
+    }
+
+    if(val.startDate !== undefined && val.endDate !== undefined) {
+        if(new Date(val.endDate) < new Date(val.startDate)) {
+            alert('End date should be greater or equal to start date');
+            return;
+        }
+    }
+    workItemMap.set(key, val);
+}
+
+function saveTaskAndWorkItems() {
+    if(taskMap.size > 0 || workItemMap.size > 0) {
+        // console.log('JSON.stringify(mapToObj(taskMap))----', JSON.stringify(mapToObj(taskMap)));
+        var taskDataStr = (taskMap.size > 0) ? JSON.stringify(mapToObj(taskMap)) : '';
+        var workItemDataStr = (workItemMap.size > 0) ? JSON.stringify(mapToObj(workItemMap)) : '';
+        saveRecordsAF(taskDataStr, workItemDataStr);
+    }
+}
+
+function mapToObj(inputMap) {
+    let obj = {};
+
+    inputMap.forEach(function(value, key){
+        obj[key] = value
+    });
+
+    return obj;
+}
+
+function showNotes(workItemId) {
+    console.log('workitem id', workItemId);
+    var notesElems = document.getElementsByClassName(workItemId);
+    var elem = notesElems[0];
+    console.log('workitem id', elem);
+    elem.classList.add('show');
+}
+function toggleNotes(workItemId) {
+    var notesElems = document.getElementsByClassName(workItemId);
+    var elem = notesElems[0];
+    var classList = elem.classList;
+    if(classList.contains('show')) {
+        classList.remove('show');
+        classList.add('hide');
+    } else {
+        classList.remove('hide');
+        classList.add('show');
+    }
+}
+
+function addWorkItem(taskId) {
+    console.log('task id--', taskId);
+    var taskParentElem = document.getElementById(taskId);
+    console.log('taskParentElem---', taskParentElem);
+    var taskNameElem = taskParentElem.getElementsByClassName('ti-basic-details')[0];
+    var taskName = taskNameElem.innerText;
+
+    document.getElementById('popup-taskid').value = taskId;
+    document.getElementById('popup-taskname').innerText = taskName;
+    document.getElementById('add-task-popup').classList.remove('hide');
+}
+
+function saveNewWorkItem(e) {
+    console.log('eee------', e);
+    e.preventDefault();
+    var taskId = document.getElementById('popup-taskid').value;
+    var wiName = document.getElementById('popup-workitem-name').value;
+    var wiNotes = document.getElementById('popup-workitem-notes').value;
+    var wiStatus = document.getElementById('popup-workitem-status').value;
+    var wi = {
+        taskId: taskId,
+        name: wiName,
+        notes: wiNotes,
+        status: wiStatus
+    };
+    console.log('save wi---', wi);
+    saveNewWIAF(JSON.stringify(wi));
+}
+
+function closeAddWIpopup(e) {
+    e.preventDefault();
+    console.log('closing popup--', e);
+    document.getElementById('add-task-popup').classList.add('hide');
+}
+
+function redirectToHome(e) {
+    e.preventDefault();
+    if(taskMap.size > 0 || workItemMap.size > 0) {
+        alert('You have unsaved work!');
+    } else {
+        redirectToEngagementHomeAF();
+    }
+}
+</script>
+</apex:page>

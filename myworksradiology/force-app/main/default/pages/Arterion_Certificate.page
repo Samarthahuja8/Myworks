@@ -1,0 +1,281 @@
+<apex:page standardController="EM_Attendee_vod__c" extensions="AC_Extension" standardstylesheets="false" sidebar="false" showheader="false" docType="html-5.0" >
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <style>
+            #wrapper {
+                margin-right:auto;
+                width:960px;
+                text-align: left;
+            }
+            
+            .btn {
+              background-color: #000080;
+              color: white;
+              padding: 10px; 
+              font-size: 12px;
+              border: none;
+              cursor: pointer; 
+            
+            }  
+
+            
+            .dropbtn {
+              background-color: #000080;
+              color: white;
+              padding: 10px; 
+              font-size: 12px;
+              border: none;
+            }
+            
+            .dropdown {
+              position: relative;
+              display: inline-block;
+            }
+            
+            .dropdown-content {
+              display: none;
+              position: absolute;
+              background-color: #f1f1f1;
+              min-width: 160px;
+              box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+              z-index: 1;
+            }
+            
+            .dropdown-content a {
+              color: black;
+              padding: 12px 16px;
+              text-decoration: none;
+              display: block;
+            }
+            
+            .dropdown-content a:hover {background-color: #ddd;}
+            
+            .dropdown:hover .dropdown-content {display: block;}
+            
+            .dropdown:hover .dropbtn {background-color: #3e8e41;}
+            
+            /* The Modal (background) */
+            .modal {
+              display: none; /* Hidden by default */
+              position: fixed; /* Stay in place */
+              z-index: 1; /* Sit on top */
+              padding-top: 100px; /* Location of the box */
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%; /* Full height */
+              overflow: auto; /* Enable scroll if needed */
+              background-color: rgb(0,0,0); /* Fallback color */
+              background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+            
+            /* Modal Content */
+            .modal-content {
+              background-color: #fefefe;
+              margin: auto;
+              padding: 20px;
+              border: 1px solid #888;
+              width: 50%;
+            }
+            
+            /* The Close Button */
+            .close {
+              color: #aaaaaa;
+              float: right;
+              font-size: 28px;
+              font-weight: bold;
+            }
+            
+            .close:hover,
+            .close:focus {
+              color: #000;
+              text-decoration: none;
+              cursor: pointer;
+            }
+
+        </style>
+        <script>
+            /* When the user clicks on the button, 
+            toggle between hiding and showing the dropdown content */
+            function myFunction() {
+              document.getElementById("myDropdown").classList.toggle("show");
+            }
+            function errshowpop() {
+                var ermodal1 = document.getElementById("errModal");
+                ermodal1.style.display = "block";
+            }
+        
+            function showpop() {
+              var modal1 = document.getElementById("myModal");  
+              modal1.style.display = "block";
+            }
+ 
+            // Close the dropdown if the user clicks outside of it
+            window.onclick = function(event) {
+              if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                  var openDropdown = dropdowns[i];
+                  if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                  }
+                }
+              }
+            }
+        </script>
+        
+    </head>
+    <body>
+       
+        <div id="myModal" class="modal">
+
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Email has been sent successfully.</p>
+          </div>
+        
+        </div>
+       <div id="errModal" class="modal">
+
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>There was some issue in sending Email. Please try after some time.</p>
+          </div>
+        
+        </div>
+
+       <apex:outputText value="{!callfunc}" escape="false"></apex:outputText>
+       <apex:form >
+           <apex:pageMessages />
+           <apex:actionfunction name="callUpdateOutComeJS" action="{!sendPdf }"  />
+           <apex:actionfunction name="showinpdf" action="{!showPdf }"  />
+           <div style="margin: 15px 100px 40px 40px; justify-content: flex-end">   
+               <button type="button" class="btn btn-success" onClick="callUpdateOutComeJS();">Click to send Email</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" onClick="showinpdf();">Show Pdf</button> &nbsp;&nbsp;
+                <div class="dropdown">
+                  <button class="dropbtn">Send Another Certificate</button>
+                  <div class="dropdown-content">
+                      <apex:variable value="{!AttId}" var="Id"/>
+                      <apex:repeat var="link" value="{!Types}"> 
+                          <a href="{!link.label}?id={!Id}">{!link.value}</a>
+                      </apex:repeat>
+                
+                  </div>
+                </div>
+           </div>   
+        <!--   <apex:commandButton value="Search" action="{!sendPdf}"/>
+        <apex:outputpanel id="counter">
+            
+            <apex:outputText value="Click Me!: "/>
+            <apex:actionSupport event="onclick" 
+                                action="{!sendPdf}" 
+                                rerender="counter" status="counterStatus"/>
+        </apex:outputpanel>
+        <apex:actionStatus id="counterStatus" 
+                           startText=" (incrementing...)" 
+                           stopText=" (done)"/> -->
+       </apex:form>
+        
+        <div id="wrapper" >
+            <div style="margin: 35px 100px 40px 40px; justify-content: flex-end">
+                
+                <div style="margin: 0px 70px 40px 10px">
+                    <table style="width:100%">
+                      <tr>
+                        <td style="font-family: Arial; font-size: 10pt;">Technologist Name: &nbsp;&nbsp; <apex:outputText value="{!Nameattendee}" escape="false" ></apex:outputText></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-left: 3.95vh; font-family: Arial; font-size: 10pt;">Account Name: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.BH_US_Account__r.Name}" rendered="{!rectype}" escape="false" ></apex:outputText></td>
+                      </tr>
+                      <tr>
+                          <td style="padding-left: 9.95vh; font-family: Arial; font-size: 10pt;">Address: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.Location_Address_vod__c}" escape="false" ></apex:outputText></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-left: 14vh; font-family: Arial; font-size: 10pt;">City: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.City_vod__c}" escape="false" ></apex:outputText></td>
+                      </tr>  
+                      <tr>
+                        <td style="padding-left: 12.8vh; font-family: Arial; font-size: 10pt;">State: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.State_Province_vod__c}" escape="false" ></apex:outputText></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-left: 14.65vh; font-family: Arial; font-size: 10pt;">Zip: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.BH_US_Location__r.SVMXC__Zip__c}" escape="false" ></apex:outputText></td>
+                      </tr>
+                    </table>
+                    <hr/>
+                    
+                </div>
+                <div style="text-align: justify; margin: 40px 70px 40px 10px">
+                    <p style="font-family: Arial; font-size: 11pt;">Date:&nbsp;&nbsp;<apex:outputText value="{!Dateevent}" escape="false" ></apex:outputText></p>
+                    <p style="font-family: Arial; font-size: 11pt;">The technologist listed above has been in-serviced/trained by a Bayer Clinical Performance Specialist on the following activity approved by the ASRT.&nbsp;</p>
+                    <h3 style="font-family: Arial; font-size: 11.2pt;">Bayer Radiology Mark 7 Arterion Injector In-service</h3>
+                    <h4 style="font-family: Arial; font-size: 11.2pt;">ASRT Reference Number:&nbsp;<apex:outputText value="{!$Label.ASRT_Ref_Arterion}"></apex:outputText> </h4>
+                    <p style="margin-top: -13px; padding-left: 69px; font-family: Arial; font-size: 11pt;">Expiration Date:&nbsp;<apex:outputText value="{!$Label.Exp_Date_Arterion}"></apex:outputText></p> 
+                    <p style="margin-top: 30px; font-family: Arial; font-size: 11pt;">This program is approved for &nbsp;<apex:outputText value="{!$Label.hours_Arterion}"></apex:outputText> &nbsp;Hours, Category A Education Credits by the American Society of Radiologic Technologists (ASRT).&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+                    <br/>
+                    <p style="font-family: Arial; font-size: 11pt;"> <apex:outputText value="{!Nameattendee}" escape="false" ></apex:outputText> </p>
+                    <p style="margin-top: -23px">_____________________________________</p>
+                    <p style="font-family: Arial; font-size: 11pt;">Technologist Name</p>
+                    <p>&nbsp;</p>
+                    <p style="font-family: Arial; font-size: 11pt;"> <apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.Owner.Name}" escape="false" ></apex:outputText> </p>
+                    <p style="margin-top: -23px">_____________________________________</p>
+                    <p style="font-family: Arial; font-size: 11pt;">Bayer Clinical Performance Specialist</p>
+                    <p>&nbsp;</p>
+                    <p style="font-family: Arial; font-size: 11pt;"><b>Technologists Instructions:</b> <em>Please maintain a copy of this form for your records. Bayer is not responsible for filing any credits with licensing agencies or ASRT. &nbsp;If you have further questions, please contact your local Bayer Clinical Performance Specialist.</em></p>
+                    
+                </div>
+                
+                
+            </div>
+            <div style="margin: -800px 0px 50px 850px">
+                <div style="margin-left: 0px">
+                    <apex:image url="https://bhc-us1--tst--c.cs20.visual.force.com/resource/1601376922000/BayerLogo1" styleClass="imageStyle" />
+                </div>
+                <p style="font-size: 11.5px">
+                    One Bayer Drive &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Indianola, PA 15051 &nbsp;&nbsp;&nbsp;&nbsp;
+                    U.S.A.
+                </p>
+                <p style="font-size: 11.5px">
+                    (412) 767-2400
+                </p>
+                <p style="font-size: 11px; font-family: Times New Roman">
+                    www.radiologysolutions.bayer.com
+                </p>
+            </div>
+        </div>
+        <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+        var ermodal = document.getElementById("errModal");       
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        var errspan = document.getElementsByClassName("close")[1];
+        
+        // When the user clicks the button, open the modal 
+        
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+          modal.style.display = "none";
+            
+        }
+        errspan.onclick = function() {
+         
+          ermodal.style.display = "none";  
+        }
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          if (event.target == modal ) {
+            modal.style.display = "none";
+          }
+          else if(event.target == ermodal) {
+              ermodal.style.display = "none";
+          }
+        }
+        </script>
+
+        
+    </body>
+</apex:page>

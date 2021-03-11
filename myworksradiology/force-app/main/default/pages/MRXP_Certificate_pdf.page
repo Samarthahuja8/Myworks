@@ -1,0 +1,70 @@
+<apex:page standardController="EM_Attendee_vod__c" extensions="AC_Extension" standardstylesheets="false" sidebar="false" showheader="false" renderAs="pdf">
+    <head>
+        <title>CE Certificate</title>
+    </head>
+    <body>
+        <div style="margin: 5px 100px 40px 40px; justify-content: flex-end">
+            <div style="margin: 0px -50px 40px 10px">
+                <apex:image url="https://bhc-us1--c.na118.visual.force.com/resource/1601649583000/logo_bayer" width="90" styleClass="imageStyle" style="margin-left: 503px" />
+            </div>
+            <div style="margin: -65px 70px 40px 10px">
+                <table style="width:100%">
+                  <tr>
+                    <td style="font-family: Arial; font-size: 10pt;">Technologist Name: &nbsp;&nbsp;<apex:outputText value="{!Nameattendee}" escape="false" ></apex:outputText></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left: 25px; font-family: Arial; font-size: 10pt;">Account Name: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.BH_US_Account__r.Name}" rendered="{!rectype}" escape="false" ></apex:outputText></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left: 61.5px; font-family: Arial; font-size: 10pt;">Address: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.Location_Address_vod__c}" escape="false" ></apex:outputText></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left: 81.5px; font-family: Arial; font-size: 10pt;">City: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.City_vod__c}" escape="false" ></apex:outputText></td>
+                  </tr>  
+                  <tr>
+                    <td style="padding-left: 78.5px; font-family: Arial; font-size: 10pt;">State: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.State_Province_vod__c}" escape="false" ></apex:outputText></td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left: 86.3px; font-family: Arial; font-size: 10pt;">Zip: &nbsp;&nbsp;<apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.BH_US_Location__r.SVMXC__Zip__c}" escape="false" ></apex:outputText></td>
+                  </tr>
+                </table>
+                <hr/>
+                
+            </div>
+            <div style="text-align: justify; margin: 40px 70px 40px 10px">
+                <p style="font-family: Arial; font-size: 11.4pt;">Date:&nbsp;&nbsp;<apex:outputText value="{!Dateevent}" escape="false" ></apex:outputText></p>
+                <p style="font-family: Arial; font-size: 11.4pt;">The technologist listed above has been in-serviced/trained by a Bayer Clinical Performance Specialist on the following activity approved by the ASRT.&nbsp;</p>
+                <h3 style="font-family: Arial; font-size: 11.7pt;">Bayer Radiology MRXperion Injector In-service</h3>
+                <h4 style="font-family: Arial; font-size: 11.6pt;">ASRT Reference Number:&nbsp;<apex:outputText value="{!$Label.ASRT_Ref_MRXP}"></apex:outputText> </h4>
+                <p style="margin-top: -13px; padding-left: 69px; font-family: Arial; font-size: 11.4pt;">Expiration Date:&nbsp;<apex:outputText value="{!$Label.Exp_Date_MRXP}"></apex:outputText></p> 
+                <p style="margin-top: 30px; font-family: Arial; font-size: 11.4pt;">This program is approved for &nbsp;<apex:outputText value="{!$Label.hours_MRXP}"></apex:outputText> &nbsp;Hours, Category A Education Credits by the American Society of Radiologic Technologists (ASRT).&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+                <p style="margin-top: 42px; font-family: Arial; font-size: 11.4pt;"> <apex:outputText value="{!Nameattendee}" escape="false" ></apex:outputText> </p>
+                <p style="margin-top: -23px">_____________________________________</p>
+                <p style="font-family: Arial; font-size: 11.4pt;">Technologist Name</p>
+                <p>&nbsp;</p>
+                <p style="font-family: Arial; font-size: 11.4pt;"> <apex:outputText value="{!EM_Attendee_vod__c.Event_vod__r.Owner.Name}" escape="false" ></apex:outputText> </p>
+                <p style="margin-top: -23px">_____________________________________</p>
+                <p style="font-family: Arial; font-size: 11.4pt;">Bayer Clinical Performance Specialist</p>
+                <p>&nbsp;</p>
+                <p style="font-family: Arial; font-size: 11.4pt;"><b>Technologists Instructions:</b> <em>Please maintain a copy of this form for your records. Bayer is not responsible for filing any credits with licensing agencies or ASRT. &nbsp;If you have further questions, please contact your local Bayer Clinical Performance Specialist.</em></p>
+                
+            </div>
+            
+            
+        </div>
+        <div style="margin: -745px 0px 50px 555px">
+            <p style="font-size: 11.5px">
+                One Bayer Drive &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Indianola, PA 15051 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                U.S.A.
+            </p>
+            <p style="font-size: 11.5px">
+                (412) 767-2400
+            </p>
+            <p style="font-size: 11px; font-family: Times New Roman">
+                www.radiologysolutions.bayer.com
+            </p>
+        </div>
+        
+    </body>
+</apex:page>

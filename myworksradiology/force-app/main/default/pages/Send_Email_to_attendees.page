@@ -1,0 +1,156 @@
+<apex:page standardController="EM_Event_vod__c" extensions="Send_Email_Extension">
+    <head>
+        <script>
+        let mySet = new Set();
+        var temp=true;
+        var i,abc,j,idinset;
+        var arr=[];
+        function selectall(object) {
+            console.log(object.checked);
+            if(temp) {
+                initalizeset();
+            }
+            else {
+                var ckid=document.getElementsByClassName('ck');
+                if(object.checked==false) {
+                    for(j=0;j<ckid.length;j++) {
+                        idinset=document.getElementsByClassName('msgpost')[ckid[j].value].innerHTML;
+                        if(ckid[j].checked) {
+                            ckid[j].checked=false;
+                            mySet.delete(idinset);
+                        }
+                        // console.log(ckid[j]);
+                    }
+                }
+                else {
+                    for(j=0;j<ckid.length;j++) {
+                        idinset=document.getElementsByClassName('msgpost')[ckid[j].value].innerHTML;
+                        if(ckid[j].checked==false) {
+                            ckid[j].checked=true;
+                            mySet.add(idinset);
+                        }
+                        // console.log(ckid[j]);
+                    }
+
+                }
+            }
+            console.log(mySet);
+        }
+        function initalizeset() {
+            var x = document.getElementsByClassName('msgpost').length;
+            if (temp) {
+                for(i=0;i<x;i++) {
+                     abc=document.getElementsByClassName('msgpost')[i].innerHTML;
+                     mySet.add(abc)
+                 }
+                 temp=false;
+             }
+
+        }
+        function go(obj) {
+             var huh=document.getElementsByClassName('msgpost')[obj.value].innerHTML;
+             initalizeset();
+            
+             if (obj.checked==false) {
+                 mySet.delete(huh);
+             }
+             else {
+                 mySet.add(huh);
+             }    
+             console.log(obj.checked);
+             console.log(obj.value);
+             console.log(huh);
+             console.log(mySet);
+                  
+         }
+        function callUpdateOutComeJS(xid) {
+            initalizeset();
+            console.log(mySet);
+            console.log(xid);
+            //  var x1 = document.getElementsByClassName('msgpost').length;
+            if(mySet.size==0) {
+                alert("No attendees are selected/The Event has no attendees");
+            }
+            else {
+                for(let item of mySet) {
+                    arr.push(item);
+                //      console.log(item);
+                //  document.getElementById(xid).value = mySet;
+                //console.log(document.getElementById(xid).value);
+             
+                
+                }
+                console.log(arr);
+                document.getElementById(xid).value = arr;
+                if (confirm("Do you want to send the Email to the selected Attendees?") == true) {
+                    alert("The Email will be send to the selected Attendees."); 
+                    echo(arr);
+                } else {
+                    alert("The Email send has been cancelled.");
+                }
+                
+
+            } 
+
+        }
+        
+        </script>
+        <style>
+   <!--         table {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            
+            th, td {
+              text-align: left;
+              padding: 8px;
+            }
+            
+            tr:nth-child(even) {background-color: #f2f2f2;} -->
+        
+
+        </style>
+        <apex:slds />
+    </head>
+    <body>
+        <apex:pageMessages id="showmsg"></apex:pageMessages>
+        <apex:form style="margin-left: 20px; margin-top:10px">
+            <apex:inputHidden value="{!enteredText1}" id="inptHdn"/> 
+            <apex:actionfunction name="echo" action="{!updateattendeecb }" >
+              <!--  <apex:param name="countries" assignTo="{!enteredText1}" value="" /> -->
+            </apex:actionfunction>
+
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" border="1" id="team-list" style="border-color: #00bfff; border-style: solid ">
+                <thead>
+                  <tr class="slds-text-heading_label"> 
+                   <th scope="col" style="font-size: 14px"><input type="checkbox" id="cksuper" onclick="selectall(this);" /> Send Email</th>
+                   <th scope="col" style="display:none">Attendee Id</th>
+                   <th scope="col" style="font-size: 14px">Attendee Name</th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   <th scope="col" style="font-size: 14px">Status</th>
+                 </tr>
+
+                </thead>
+                <tbody>
+              <apex:variable value="0" var="num"/>
+              <apex:variable value="1" var="serial"/>
+              <apex:repeat var="attend" value="{!Attendees}">
+                <tr>
+                 <td style="font-size: 14px"><input type="checkbox" class="ck" checked="true" value="{!num}" onclick="go(this);" /> </td> 
+                 <td style="display:none"><p class="msgpost" >{!attend.Id}</p> </td>
+                 <td style="font-size: 14px">{!attend.Attendee_Name_vod__c}</td>
+                 <td style="font-size: 14px">{!attend.Status_vod__c}</td>  
+                </tr>
+                <apex:variable var="num" value="{!VALUE(num) + 1}"/>
+                <apex:variable var="serial" value="{!VALUE(serial) + 1}"/>
+
+              </apex:repeat> 
+
+                </tbody>
+            </table>
+            <br/>
+            <button type="button" class="slds-button slds-button_brand slds-m-top_medium"  onClick="callUpdateOutComeJS('{!$Component.inptHdn}');" >Click to send Email</button>
+         </apex:form>
+         
+       
+    </body>
+</apex:page>
